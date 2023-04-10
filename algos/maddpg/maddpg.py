@@ -77,6 +77,7 @@ class MADDPG:
             target = rewards[:,agent_idx] + agent.gamma*critic_value_
             critic_loss = F.mse_loss(target, critic_value)
             agent.critic.optimizer.zero_grad()
+            critic_loss = critic_loss.float()
             critic_loss.backward(retain_graph=True)
             agent.critic.optimizer.step()
 

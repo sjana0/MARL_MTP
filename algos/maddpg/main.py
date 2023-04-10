@@ -1,7 +1,16 @@
 import numpy as np
 from maddpg import MADDPG
 from buffer import MultiAgentReplayBuffer
-import gym
+import importlib.util as ilu
+
+# folder = '/.../sjana/envs'
+# file = 'npendulum'
+# spec = ilu.spec_from_file_location(file, folder)
+# MultiAgentPendulumEnv = ilu.module_from_spec(spec)
+# spec.loader.exec_module(MultiAgentPendulumEnv)
+import sys
+sys.path.append('../../envs')
+from npendulum import MultiAgentPendulumEnv
 
 def obs_list_to_state_vector(observation):
     state = np.array([])
@@ -11,20 +20,20 @@ def obs_list_to_state_vector(observation):
 
 if __name__ == '__main__':
     #scenario = 'simple'
-    env_name = 'NCartPole-v1'
+    env_name = 'npendulum'
     n = 4
     kwargs={"ncart":n}
-    env = gym.make(env_name, **kwargs)
-    env.seed(0)
+    env = MultiAgentPendulumEnv(n)
     n_agents = n
     actor_dims = []
+    # print("dims: ", env.observation_space.shape)
     for i in range(n_agents):
         actor_dims.append(env.observation_space[i].shape[0])
     print(actor_dims)
     critic_dims = sum(actor_dims)
 
     # action space is a list of arrays, assume each agent has same action space
-    n_actions = env.action_space[0].n
+    n_actions = n
     maddpg_agents = MADDPG(actor_dims, critic_dims, n_agents, n_actions, 
                            fc1=64, fc2=64,  
                            alpha=0.01, beta=0.01, env_name=env_name,
@@ -45,29 +54,27 @@ if __name__ == '__main__':
         maddpg_agents.load_checkpoint()
 
     for i in range(N_GAMES):
-        obs = env.reset().reshape(n, 4)
+        obs = env.reset()
         score = 0
-        done = False
+        done = [False]*n_agents
         episode_step = 0
-        while not done:
+        while not any(done):
             if evaluate:
                 env.render()
                 #time.sleep(0.1) # to slow down the action for the video
             actions = maddpg_agents.choose_action(obs)
-            action_pass = 0
-            for ele in actions:
-                print("ele: ", ele[0])
-                action_pass = action_pass << 1 | int(ele[0])
-            print("actions: ", action_pass)
-            obs_, reward, done, info = env.step(action_pass)
-
-            obs_ = obs_.reshape(n, 4)
+            action_pass = []
+            # for ele in actions:
+            #     print("ele: ", ele)
+            #     action_pass = action_pass << 1 | int(ele[0])
+            # print("actions: ", action_pass)
+            obs_, reward, done, info = env.step(actions)
 
             state = obs_list_to_state_vector(obs)
             state_ = obs_list_to_state_vector(obs_)
 
             if episode_step >= MAX_STEPS:
-                done = True
+                done = [True]*n_agents
 
             memory.store_transition(obs, state, actions, reward, obs_, state_, done)
 

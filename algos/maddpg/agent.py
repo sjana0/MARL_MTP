@@ -30,7 +30,8 @@ class Agent:
         noise = T.rand(self.n_actions).to(self.actor.device)
         action = actions + noise
         ret = action.detach().cpu().numpy()[0]
-        ret[0] = round(ret[0])%2
+        # print("ret: ", ret)
+        # ret[0] = round(ret[0])%2
         return ret
 
     def update_network_parameters(self, tau=None):
