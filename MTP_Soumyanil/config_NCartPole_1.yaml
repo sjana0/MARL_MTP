@@ -1,0 +1,24 @@
+aa_exp_run_count: 0
+aa_exp_seeds: 
+- 0
+dataset_epochs_count: 10000
+dataset_max_epoch_steps: 4000
+env_name:
+- NCartPole-v1
+evl_epochs: 100
+evl_max_epoch_steps: 4000
+ppo_act_fn: torch.nn.ReLU
+ppo_clip_ratio: 0.2
+ppo_epoch_steps: 4000
+ppo_epochs: 250
+ppo_gamma: 0.99
+ppo_hid_nodes:
+- - 64
+  - 64
+ppo_lam: 0.97
+ppo_lr_pi: 3e-4
+ppo_lr_v: 1e-3
+ppo_save_freq: 10
+ppo_target_kl: 0.01
+ppo_train_pi_iters: 80
+ppo_train_v_iters: 80

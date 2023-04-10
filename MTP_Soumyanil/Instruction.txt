@@ -1,0 +1,5 @@
+install the followings:
+1. GYM VERSION = "0.19.0"
+2. copy paste the gym folder here:
+	/anaconda3/envs/<your env name>/lib/python3.7/site-packages/
+3. Open PPO_NCartPole.ipynb using jupyter nodebook
