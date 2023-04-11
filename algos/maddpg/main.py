@@ -1,13 +1,7 @@
 import numpy as np
 from maddpg import MADDPG
 from buffer import MultiAgentReplayBuffer
-import importlib.util as ilu
 
-# folder = '/.../sjana/envs'
-# file = 'npendulum'
-# spec = ilu.spec_from_file_location(file, folder)
-# MultiAgentPendulumEnv = ilu.module_from_spec(spec)
-# spec.loader.exec_module(MultiAgentPendulumEnv)
 import sys
 sys.path.append('../../envs')
 from npendulum import MultiAgentPendulumEnv

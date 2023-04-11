@@ -12,7 +12,7 @@ class MultiAgentPendulumEnv(gym.Env):
 
     def reset(self):
         self.states = [env.reset() for env in self.pendulum_envs]
-        return np.array(self.states, dtype=np.float32)
+        return np.array(self.states)
 
     def step(self, actions):
         rewards = []
@@ -27,14 +27,7 @@ class MultiAgentPendulumEnv(gym.Env):
             rewards.append(reward)
             dones.append(done)
             infos.append(info)
-        return np.array(self.states, dtype=np.float32), np.array(rewards), np.array(dones), infos
-    
-    # def step(self, action, i):
-    #     action
-    #     state, reward, done, info = self.pendulum_envs[i].step(action)
-    #     if done:
-    #         state = self.pendulum_envs[i].reset()
-    #     return np.array(state), reward, done, info
+        return np.array(self.states), np.array(rewards), np.array(dones), infos
 
     def render(self, mode='human'):
         for env in self.pendulum_envs:

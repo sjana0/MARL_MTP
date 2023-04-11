@@ -1,6 +1,7 @@
 import torch as T
 import torch.nn.functional as F
 from agent import Agent
+T.autograd.set_detect_anomaly(True)
 
 class MADDPG:
     def __init__(self, actor_dims, critic_dims, n_agents, n_actions, 
@@ -71,10 +72,13 @@ class MADDPG:
 
         for agent_idx, agent in enumerate(self.agents):
             critic_value_ = agent.target_critic.forward(states_, new_actions).flatten()
+            print("critic_value", critic_value_.dtype)
             critic_value_[dones[:,0]] = 0.0
             critic_value = agent.critic.forward(states, old_actions).flatten()
+            print("critic_value", critic_value.dtype)
 
             target = rewards[:,agent_idx] + agent.gamma*critic_value_
+            print("target: ", target.dtype)
             critic_loss = F.mse_loss(target, critic_value)
             agent.critic.optimizer.zero_grad()
             critic_loss = critic_loss.float()
